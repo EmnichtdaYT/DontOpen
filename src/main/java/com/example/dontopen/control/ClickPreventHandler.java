@@ -1,7 +1,6 @@
 package com.example.dontopen.control;
 
 import com.example.dontopen.view.MainPane;
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.control.Button;
@@ -13,8 +12,10 @@ import java.util.Random;
 
 public class ClickPreventHandler implements EventHandler<MouseEvent>{
 
-    private MainPane mainPane;
-    private Robot robot = new Robot();
+    final private MainPane mainPane;
+    final private Robot robot = new Robot();
+    private boolean locked = false;
+    private int userSufferCount;
 
     public ClickPreventHandler(MainPane mainPane) {
         this.mainPane = mainPane;
@@ -22,6 +23,21 @@ public class ClickPreventHandler implements EventHandler<MouseEvent>{
 
     @Override
     public void handle(MouseEvent event) {
+
+        if(locked) return;
+
+        locked = true;
+        userSufferCount++;
+
+        if(userSufferCount==3){
+            mainPane.getButton().setText("DON'T. TOUCH.");
+        }else if(userSufferCount==10){
+            mainPane.getTitle().setText("Can you even read? DON'T. TOUCH. THE. BUTTON.");
+        }else if(userSufferCount==15){
+            mainPane.getTitle().setStyle("-fx-text-fill: red;");
+        }else if(userSufferCount==20){
+            mainPane.getTitle().setText("YOUR STUPID MOUSE WON'T HELP YOU! STOP IT!");
+        }
 
         Button button = (Button) event.getSource();
 
@@ -47,20 +63,46 @@ public class ClickPreventHandler implements EventHandler<MouseEvent>{
                     GridPane.setHalignment(button, HPos.RIGHT);
                 }
             }
+
+            new Thread(() -> {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                unlock();
+            }).start();
+
         }else{
-            int xDelta = r.nextInt(30)+60;
-            int yDelta = r.nextInt(20)+50;
+
+            int xDelta = 0;
+            int yDelta = 0;
+
+            if(r.nextBoolean()){
+                xDelta = r.nextInt(30)+20;
+            }else{
+                yDelta = r.nextInt(30)+20;
+            }
+
             if(r.nextBoolean()){
                 xDelta*=-1;
             }
             if(r.nextBoolean()){
                 yDelta*=-1;
             }
-            new Thread(new SlowlyMoveMousePointer(robot, r.nextInt(), -50, robot.getMouseX(), robot.getMouseY())).start();
+            new Thread(new SlowlyMoveMousePointer(this, robot, xDelta, yDelta, robot.getMouseX(), robot.getMouseY())).start();
         }
+    }
+
+    protected void unlock(){
+        locked = false;
     }
 
     public MainPane getMainPane(){
         return mainPane;
+    }
+
+    public int getUserSufferCount() {
+        return userSufferCount;
     }
 }

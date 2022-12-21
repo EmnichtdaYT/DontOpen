@@ -5,13 +5,15 @@ import javafx.scene.robot.Robot;
 
 public class SlowlyMoveMousePointer implements Runnable{
 
-    private Robot robot = new Robot();
-    private double xDelta;
-    private double yDelta;
+    final private Robot robot;
+    private int xDelta;
+    private int yDelta;
     private double currentX;
     private double currentY;
+    final private ClickPreventHandler caller;
 
-    public SlowlyMoveMousePointer(Robot robot, double xDelta, double yDelta, double currentX, double currentY){
+    public SlowlyMoveMousePointer(ClickPreventHandler caller, Robot robot, int xDelta, int yDelta, double currentX, double currentY){
+        this.caller = caller;
         this.robot = robot;
         this.xDelta = xDelta;
         this.yDelta = yDelta;
@@ -27,49 +29,50 @@ public class SlowlyMoveMousePointer implements Runnable{
     public void run() {
         try {
             while(!isReached()){
-                int xDeltaThisStep = 0;
-                int yDeltaThisStep = 0;
+
+                int xPositionThisStep = (int) Math.floor(currentX);
+                int yPositionThisStep = (int) Math.floor(currentY);
 
                 if(xDelta>0){
-                    xDeltaThisStep = -1;
                     xDelta--;
-                    currentX--;
+                    xPositionThisStep--;
                 }else if(xDelta<0){
-                    xDeltaThisStep = 1;
                     xDelta++;
-                    currentX++;
+                    xPositionThisStep++;
                 }
 
                 if(yDelta>0){
-                    yDeltaThisStep = -1;
                     yDelta--;
-                    currentY--;
+                    yPositionThisStep--;
                 }else if(yDelta<0){
-                    yDeltaThisStep = 1;
                     yDelta++;
-                    currentY++;
+                    yPositionThisStep++;
                 }
 
-                final int finalXDeltaThisStep = xDeltaThisStep;
-                final int finalYDeltaThisStep = yDeltaThisStep;
-                Platform.runLater(() -> {robot.mouseMove(currentX + finalXDeltaThisStep, currentY + finalYDeltaThisStep);});
+                currentX = xPositionThisStep;
+                currentY = yPositionThisStep;
 
-                Thread.sleep(10);
+                final int finalXPositionThisStep = xPositionThisStep;
+                final int finalYPositionThisStep = yPositionThisStep;
+                Platform.runLater(() -> robot.mouseMove(finalXPositionThisStep, finalYPositionThisStep));
+
+                Thread.sleep(5);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        caller.unlock();
     }
 
     public Robot getRobot() {
         return robot;
     }
 
-    public double getXDelta() {
+    public int getXDelta() {
         return xDelta;
     }
 
-    public double getYDelta() {
+    public int getYDelta() {
         return yDelta;
     }
 

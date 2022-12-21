@@ -1,7 +1,9 @@
 package com.example.dontopen.view;
 
+import com.example.dontopen.HelloApplication;
 import com.example.dontopen.Utils;
 import com.example.dontopen.control.ClickPreventHandler;
+import com.example.dontopen.control.EnterPressedHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,14 +17,17 @@ import javafx.stage.Stage;
 
 public class MainPane extends GridPane {
 
-    private Stage stage;
+    final private HelloApplication application;
+    final private Stage stage;
 
-    public MainPane(Stage stage){
+    public MainPane(HelloApplication application, Stage stage){
+        this.application = application;
         this.stage = stage;
     }
 
     private Button theThingTheUserShouldntClick;
     private Label title;
+    private Label text;
 
     public void init(){
         this.setAlignment(Pos.CENTER);
@@ -36,9 +41,16 @@ public class MainPane extends GridPane {
         theThingTheUserShouldntClick.setAlignment(Pos.CENTER);
         theThingTheUserShouldntClick.setTextAlignment(TextAlignment.CENTER);
         theThingTheUserShouldntClick.setOnMouseMoved(new ClickPreventHandler(this));
+        theThingTheUserShouldntClick.setOnKeyPressed(new EnterPressedHandler(this));
+
+        text = new Label("You are so done.");
+        text.setAlignment(Pos.CENTER);
+        text.setTextAlignment(TextAlignment.CENTER);
+        text.setVisible(false);
 
         this.add(title, 1, 1);
         this.add(theThingTheUserShouldntClick, 1, 2);
+        this.add(text, 1, 3);
 
         this.getChildren().forEach(child -> {
             GridPane.setHalignment(child, HPos.CENTER);
@@ -57,5 +69,13 @@ public class MainPane extends GridPane {
 
     public Stage getStage(){
         return stage;
+    }
+
+    public Label getText() {
+        return text;
+    }
+
+    public HelloApplication getApplication() {
+        return application;
     }
 }
