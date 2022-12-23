@@ -1,10 +1,13 @@
 package com.example.dontopen;
 
+import com.example.dontopen.view.GamePaneWrapper;
 import com.example.dontopen.view.MainPane;
+import com.example.dontopen.view.levels.lvl2.MazePane;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -15,7 +18,7 @@ public class HelloApplication extends Application {
 
     private int level = 0;
     private Stage mainStage;
-    private MainPane mainPane;
+    private GamePaneWrapper currentGamePane;
 
     @Override
     public void start(Stage stage) {
@@ -33,14 +36,18 @@ public class HelloApplication extends Application {
     public void nextLevel() {
         level++;
         saveCurrentLevel();
+        Pane currentPane = null;
+        if(currentGamePane!=null) currentPane = currentGamePane.getPane();
 
         switch (level) {
             case 1 -> {
-                mainPane = new MainPane(this, mainStage);
-                mainPane.init();
-                mainStage.setScene(new Scene(mainPane, 800, 500));
+                currentGamePane = new GamePaneWrapper(new MainPane(this, mainStage));
+                currentGamePane.initPane();
+                currentPane = currentGamePane.getPane();
+                mainStage.setScene(new Scene(currentPane, 800, 500));
             }
             case 2 -> {
+                final MainPane level2Pane = (MainPane) currentPane;
                 getHostServices().showDocument("https://ia804609.us.archive.org/4/items/rick-roll/Rick%20Roll.ia.mp4");
                 new Thread(() -> {
                     try {
@@ -48,25 +55,32 @@ public class HelloApplication extends Application {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+
                     Platform.runLater(() -> {
                         mainStage.requestFocus();
-                        mainPane.getText().setText("Do you want some more of that? Sure thing!");
-                        mainPane.getText().setStyle("-fx-text-fill: red;");
+                        level2Pane.getTitle().setStyle("");
+                        level2Pane.getTitle().setText("So, you wanna play games?");
+                        level2Pane.getText().setStyle("");
+                        level2Pane.getText().setText("Ok, let's go!");
                     });
 
-                    for (int i = 0; i < 5; i++) {
-
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                        getHostServices().showDocument("https://ia804609.us.archive.org/4/items/rick-roll/Rick%20Roll.ia.mp4");
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
 
+                    Platform.runLater(this::nextLevel);
+
                 }).start();
-
-
+            }
+            case 3 ->  {
+                MazePane lvl3Pane = new MazePane(this);
+                lvl3Pane.init();
+                currentGamePane = new GamePaneWrapper(lvl3Pane);
+                currentPane = lvl3Pane;
+                mainStage.setScene(new Scene(currentPane, 1280, 720));
+                mainStage.setFullScreen(true);
             }
         }
 
@@ -94,6 +108,14 @@ public class HelloApplication extends Application {
             fileError.showAndWait().ifPresent(result -> mainStage.close());
         }
 
+    }
+
+    public Stage getMainStage() {
+        return mainStage;
+    }
+
+    public GamePaneWrapper getCurrentGamePane() {
+        return currentGamePane;
     }
 
     public static void main(String[] args) {

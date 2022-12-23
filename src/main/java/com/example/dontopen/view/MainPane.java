@@ -15,7 +15,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-public class MainPane extends GridPane {
+public class MainPane extends GridPane implements Initable{
 
     final private HelloApplication application;
     final private Stage stage;
