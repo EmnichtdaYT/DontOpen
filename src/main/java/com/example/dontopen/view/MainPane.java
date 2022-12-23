@@ -3,7 +3,7 @@ package com.example.dontopen.view;
 import com.example.dontopen.HelloApplication;
 import com.example.dontopen.Utils;
 import com.example.dontopen.control.ClickPreventHandler;
-import com.example.dontopen.control.EnterPressedHandler;
+import com.example.dontopen.control.ButtonPressedWithKeyHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -41,7 +41,7 @@ public class MainPane extends GridPane {
         theThingTheUserShouldntClick.setAlignment(Pos.CENTER);
         theThingTheUserShouldntClick.setTextAlignment(TextAlignment.CENTER);
         theThingTheUserShouldntClick.setOnMouseMoved(new ClickPreventHandler(this));
-        theThingTheUserShouldntClick.setOnKeyPressed(new EnterPressedHandler(this));
+        theThingTheUserShouldntClick.setOnKeyPressed(new ButtonPressedWithKeyHandler(this));
 
         text = new Label("You are so done.");
         text.setAlignment(Pos.CENTER);

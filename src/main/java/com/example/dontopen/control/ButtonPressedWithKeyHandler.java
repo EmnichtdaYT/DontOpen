@@ -6,17 +6,17 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class EnterPressedHandler implements EventHandler<KeyEvent> {
+public class ButtonPressedWithKeyHandler implements EventHandler<KeyEvent> {
 
     final private MainPane mainPane;
 
-    public EnterPressedHandler(MainPane mainPane) {
+    public ButtonPressedWithKeyHandler(MainPane mainPane) {
         this.mainPane = mainPane;
     }
 
     @Override
     public void handle(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
+        if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.SPACE) {
             mainPane.getTitle().setText("How dare you... That's it.");
             mainPane.getButton().setVisible(false);
 
