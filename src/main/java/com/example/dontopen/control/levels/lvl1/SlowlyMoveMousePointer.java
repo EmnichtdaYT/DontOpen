@@ -1,4 +1,4 @@
-package com.example.dontopen.control;
+package com.example.dontopen.control.levels.lvl1;
 
 import javafx.application.Platform;
 import javafx.scene.robot.Robot;

@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class DontOpenMain extends Application {
 
     private int level = 0;
     private Stage mainStage;

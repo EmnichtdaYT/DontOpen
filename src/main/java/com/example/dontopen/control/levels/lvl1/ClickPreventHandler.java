@@ -1,4 +1,4 @@
-package com.example.dontopen.control;
+package com.example.dontopen.control.levels.lvl1;
 
 import com.example.dontopen.Utils;
 import com.example.dontopen.view.MainPane;

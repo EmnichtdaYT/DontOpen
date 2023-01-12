@@ -1,9 +1,9 @@
 package com.example.dontopen.view;
 
-import com.example.dontopen.HelloApplication;
+import com.example.dontopen.DontOpenMain;
 import com.example.dontopen.Utils;
-import com.example.dontopen.control.ClickPreventHandler;
-import com.example.dontopen.control.ButtonPressedWithKeyHandler;
+import com.example.dontopen.control.levels.lvl1.ClickPreventHandler;
+import com.example.dontopen.control.levels.lvl1.ButtonPressedWithKeyHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,10 +17,10 @@ import javafx.stage.Stage;
 
 public class MainPane extends GridPane implements Initable{
 
-    final private HelloApplication application;
+    final private DontOpenMain application;
     final private Stage stage;
 
-    public MainPane(HelloApplication application, Stage stage){
+    public MainPane(DontOpenMain application, Stage stage){
         this.application = application;
         this.stage = stage;
     }
@@ -75,7 +75,7 @@ public class MainPane extends GridPane implements Initable{
         return text;
     }
 
-    public HelloApplication getApplication() {
+    public DontOpenMain getApplication() {
         return application;
     }
 }
