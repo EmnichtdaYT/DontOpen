@@ -26,19 +26,16 @@ public class MazeLoader implements Logable {
     }
 
     public MazeLoader(File levelDirectory) throws FileNotFoundException {
-        File[] levelDirectoryFiles = levelDirectory.listFiles();
-
-        if (levelDirectoryFiles == null || levelDirectoryFiles.length < 2) {
-            throw new FileNotFoundException("levelDirectory must contain at least 2 files, containing at least one map and one schedule file");
-        }
-
         Logger.getInstance().logInfo("Attempting to find maze files in directory '" + levelDirectory.getAbsolutePath() + "'.", this);
+
+        File[] levelDirectoryFiles = levelDirectory.listFiles();
+        if (levelDirectoryFiles == null || levelDirectoryFiles.length < 2)
+            throw new FileNotFoundException("levelDirectory must contain at least 2 files, containing at least one map and one schedule file");
+
         Logger.getInstance().logInfo("Directory contains " + levelDirectoryFiles.length + " files.", this);
 
         for (File f : levelDirectoryFiles) {
-            if (!f.isFile()) {
-                continue;
-            }
+            if (!f.isFile()) continue;
             if (f.getName().equals("map")) {
                 Logger.getInstance().logInfo("Found map file, attempting to set it.", this);
                 setMapFile(f);
@@ -51,22 +48,22 @@ public class MazeLoader implements Logable {
             }
         }
 
-        if (mapFile == null || scheduleFile == null) {
-            throw new FileNotFoundException("levelDirectory must contain at least one map and one schedule file");
-        }
+        if (mapFile == null || scheduleFile == null) throw new FileNotFoundException("levelDirectory must contain at least one map and one schedule file");
 
-        Logger.getInstance().logInfo("Done! Summary: " + this.toString(), this);
+        Logger.getInstance().logInfo("Done! Summary: " + this, this);
     }
 
     private void initReaders() throws FileNotFoundException {
-        mapReader = new BufferedReader(new FileReader(mapFile));
-        scheduleReader = new BufferedReader(new FileReader(scheduleFile));
-        eventsReader = new BufferedReader(new FileReader(eventsFile));
+        if (mapFile != null) mapReader = new BufferedReader(new FileReader(mapFile));
+        if (scheduleFile != null) scheduleReader = new BufferedReader(new FileReader(scheduleFile));
+        if (eventsFile != null) eventsReader = new BufferedReader(new FileReader(eventsFile));
     }
 
     public void loadMaze() throws FileNotFoundException {
         initReaders();
-        //TODO Implement
+
+
+
     }
 
     public Maze getMaze() {
@@ -107,18 +104,6 @@ public class MazeLoader implements Logable {
         } else {
             throw new FileNotFoundException("Can't read events file! Check if it exists and if it is readable!");
         }
-    }
-
-    private BufferedReader getMapReader() {
-        return mapReader;
-    }
-
-    private BufferedReader getScheduleReader() {
-        return scheduleReader;
-    }
-
-    private BufferedReader getEventsReader() {
-        return eventsReader;
     }
 
     @Override

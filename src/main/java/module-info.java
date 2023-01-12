@@ -5,4 +5,5 @@ module com.example.dontopen {
 
     opens com.example.dontopen to javafx.fxml;
     exports com.example.dontopen;
+    exports com.example.dontopen.view;
 }
